@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fast and secure top-up service for Mobile Legends and Free Fire. Compatible with iOS and Android devices.">
+    <meta name="keywords" content="Mobile Legends, Free Fire, top up, diamonds, gaming, iOS, Android">
+    <meta name="theme-color" content="#1e293b">
+    <title>GameTopUp - Mobile Legends & Free Fire Top-Up Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #1e3a8a 50%, #312e81 100%);
+            min-height: 100vh;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #06b6d4, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #10b981;
+            font-size: 0.875rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .hero h2 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .compatibility {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .compatibility-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        /* Game Selection */
+        .game-selection {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: scale(1);
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .game-btn.active.mlbb {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .game-btn.active.freefire {
+            background: linear-gradient(45deg, #f97316, #dc2626);
+            color: white;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-card.popular {
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #fbbf24;
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .diamond-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #06b6d4, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .diamond-icon.freefire {
+            background: linear-gradient(45deg, #f97316, #dc2626);
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .product-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-cancel {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #4b5563;
+        }
+
+        .btn-submit {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .contact-info {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .contact-handle {
+            color: #06b6d4;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        .footer-text {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .compatibility {
+                gap: 1rem;
+            }
+
+            .game-selection {
+                gap: 0.5rem;
+            }
+
+            .game-btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .modal-content {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Icons using CSS */
+        .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .icon-gamepad::before {
+            content: "🎮";
+            font-size: 20px;
+        }
+
+        .icon-shield::before {
+            content: "🛡️";
+            font-size: 16px;
+        }
+
+        .icon-phone::before {
+            content: "📱";
+            font-size: 16px;
+        }
+
+        .icon-tablet::before {
+            content: "📱";
+            font-size: 16px;
+        }
+
+        .icon-star::before {
+            content: "⭐";
+            font-size: 12px;
+        }
+
+        .icon-diamond::before {
+            content: "💎";
+            font-size: 16px;
+        }
+
+        .icon-card::before {
+            content: "💳";
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🎮</div>
+                    <h1>GameTopUp</h1>
+                </div>
+                <div class="security-badge">
+                    <span class="icon-shield"></span>
+                    <span>Secure & Fast</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Top Up Your Game</h2>
+            <p>Fast, secure, and reliable top-up service for Mobile Legends and Free Fire</p>
+            <div class="compatibility">
+                <div class="compatibility-item">
+                    <span class="icon-phone"></span>
+                    <span>iOS Compatible</span>
+                </div>
+                <div class="compatibility-item">
+                    <span class="icon-tablet"></span>
+                    <span>Android Compatible</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Selection -->
+    <section class="container">
+        <div class="game-selection">
+            <button class="game-btn active mlbb" onclick="selectGame('mlbb')">Mobile Legends</button>
+            <button class="game-btn" onclick="selectGame('freefire')">Free Fire</button>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <h3>Complete Your Order</h3>
+            
+            <div class="order-summary" id="orderSummary">
+                <!-- Order summary will be populated by JavaScript -->
+            </div>
+
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="userId" id="userIdLabel">User ID</label>
+                    <input type="text" id="userId" class="form-input" placeholder="Enter your User ID" required>
+                </div>
+
+                <div class="form-group" id="serverIdGroup">
+                    <label for="serverId">Server ID</label>
+                    <input type="text" id="serverId" class="form-input" placeholder="Enter your Server ID" required>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-submit">Submit Order</button>
+                </div>
+            </form>
+
+            <div class="contact-info">
+                <p>Send your order to <span class="contact-handle">@ReachStore1</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-features">
+                    <div class="footer-feature">
+                        <span class="icon-shield"></span>
+                        <span>Secure Payment</span>
+                    </div>
+                    <div class="footer-feature">
+                        <span class="icon-gamepad"></span>
+                        <span>24/7 Support</span>
+                    </div>
+                </div>
+                <p class="footer-text">© 2025 GameTopUp. Fast and secure top-up service for mobile games.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Product data
+        const mlbbProducts = [
+            { id: '11', name: '11 Diamonds', price: 0.25 },
+            { id: '22', name: '22 Diamonds', price: 0.45 },
+            { id: '56', name: '56 Diamonds', price: 0.95, popular: true },
+            { id: '112', name: '112 Diamonds', price: 1.85 },
+            { id: '172', name: '172 Diamonds', price: 2.45 },
+            { id: '257', name: '257 Diamonds', price: 3.45 },
+            { id: '343', name: '343 Diamonds', price: 4.50 },
+            { id: '429', name: '429 Diamonds', price: 5.55 },
+            { id: '514', name: '514 Diamonds', price: 6.55 },
+            { id: '600', name: '600 Diamonds', price: 7.65 },
+            { id: '706', name: '706 Diamonds', price: 8.86 },
+            { id: '792', name: '792 Diamonds', price: 9.96 },
+            { id: '878', name: '878 Diamonds', price: 11.05 },
+            { id: '963', name: '963 Diamonds', price: 12.06 },
+            { id: '1050', name: '1050 Diamonds', price: 13.15 },
+            { id: '1135', name: '1135 Diamonds', price: 14.30 },
+            { id: '1220', name: '1220 Diamonds', price: 15.30 },
+            { id: '1412', name: '1412 Diamonds', price: 17.52 },
+            { id: '1584', name: '1584 Diamonds', price: 19.76 },
+            { id: '1755', name: '1755 Diamonds', price: 21.85 },
+            { id: '1926', name: '1926 Diamonds', price: 23.98 },
+            { id: 'Weekly', name: 'Weekly Pass', price: 1.50 },
+            { id: 'Weekly2', name: 'Weekly Pass 2', price: 2.95 },
+            { id: 'Weekly3', name: 'Weekly Pass 3', price: 4.40 },
+            { id: 'Twilight', name: 'Twilight Pass', price: 7.50 },
+        ];
+
+        const freeFireProducts = [
+            { id: '25', name: '25 Diamonds', price: 0.99 },
+            { id: '100', name: '100 Diamonds', price: 2.99, popular: true },
+            { id: '310', name: '310 Diamonds', price: 7.99 },
+            { id: '520', name: '520 Diamonds', price: 12.99 },
+            { id: '1060', name: '1060 Diamonds', price: 24.99 },
+            { id: '2180', name: '2180 Diamonds', price: 49.99 },
+            { id: '5600', name: '5600 Diamonds', price: 99.99 },
+            { id: '11500', name: '11500 Diamonds', price: 199.99 },
+            { id: 'Weekly', name: 'Weekly Pass', price: 2.99 },
+            { id: 'WeeklyLite', name: 'Weekly Lite Pass', price: 1.99 },
+            { id: 'Monthly', name: 'Monthly Pass', price: 9.99 },
+            { id: 'Evo3D', name: 'Evo Gun 3D', price: 4.99 },
+            { id: 'Evo7D', name: 'Evo Gun 7D', price: 8.99 },
+            { id: 'Evo30D', name: 'Evo Gun 30D', price: 19.99 },
+            { id: 'Levelpass', name: 'Level Pass', price: 5.99 },
+        ];
+
+        let currentGame = 'mlbb';
+        let selectedProduct = null;
+
+        // Initialize the page
+        function init() {
+            renderProducts();
+        }
+
+        // Select game
+        function selectGame(game) {
+            currentGame = game;
+            
+            // Update button states
+            document.querySelectorAll('.game-btn').forEach(btn => {
+                btn.classList.remove('active', 'mlbb', 'freefire');
+            });
+            
+            const activeBtn = document.querySelector(`[onclick="selectGame('${game}')"]`);
+            activeBtn.classList.add('active', game);
+            
+            renderProducts();
+        }
+
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const products = currentGame === 'mlbb' ? mlbbProducts : freeFireProducts;
+            
+            grid.innerHTML = products.map(product => `
+                <div class="product-card ${product.popular ? 'popular' : ''}" onclick="selectProduct('${product.id}')">
+                    ${product.popular ? '<div class="popular-badge"><span class="icon-star"></span>Popular</div>' : ''}
+                    
+                    <div class="product-header">
+                        <div class="diamond-icon ${currentGame}">💎</div>
+                        <div class="price">$${product.price.toFixed(2)}</div>
+                    </div>
+                    
+                    <div class="product-name">${product.name}</div>
+                    
+                    <div class="product-footer">
+                        <span>${currentGame === 'mlbb' ? 'ML Diamonds' : 'FF Diamonds'}</span>
+                        <span class="icon-card"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select product
+        function selectProduct(productId) {
+            const products = currentGame === 'mlbb' ? mlbbProducts : freeFireProducts;
+            selectedProduct = products.find(p => p.id === productId);
+            
+            if (selectedProduct) {
+                showModal();
+            }
+        }
+
+        // Show modal
+        function showModal() {
+            const modal = document.getElementById('orderModal');
+            const summary = document.getElementById('orderSummary');
+            const userIdLabel = document.getElementById('userIdLabel');
+            const serverIdGroup = document.getElementById('serverIdGroup');
+            
+            // Update labels based on game
+            if (currentGame === 'mlbb') {
+                userIdLabel.textContent = 'User ID';
+                serverIdGroup.style.display = 'block';
+            } else {
+                userIdLabel.textContent = 'Game ID';
+                serverIdGroup.style.display = 'none';
+            }
+            
+            // Update order summary
+            summary.innerHTML = `
+                <div class="summary-row">
+                    <span>Product:</span>
+                    <span>${selectedProduct.name}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Price:</span>
+                    <span style="color: #10b981; font-weight: bold;">$${selectedProduct.price.toFixed(2)}</span>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('orderModal');
+            modal.classList.remove('show');
+            
+            // Reset form
+            document.getElementById('orderForm').reset();
+            selectedProduct = null;
+        }
+
+        // Handle form submission
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value.trim();
+            const serverId = document.getElementById('serverId').value.trim();
+            
+            if (!userId || (currentGame === 'mlbb' && !serverId)) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Generate order format
+            const orderFormat = currentGame === 'mlbb' 
+                ? `${userId} ${serverId} ${selectedProduct.id}`
+                : `${userId} 0 ${selectedProduct.id}`;
+            
+            const message = `Order: ${orderFormat}\nGame: ${currentGame.toUpperCase()}\nProduct: ${selectedProduct.name}\nPrice: $${selectedProduct.price.toFixed(2)}`;
+            
+            alert(`Order submitted!\n\n${message}\n\nSend this to @ReachStore1`);
+            
+            closeModal();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>0
